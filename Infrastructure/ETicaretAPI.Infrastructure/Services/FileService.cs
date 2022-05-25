@@ -92,25 +92,25 @@ namespace ETicaretAPI.Infrastructure.Services
 
         public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
         {
-            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
+                string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, path);
+                if (!Directory.Exists(uploadPath))
+                    Directory.CreateDirectory(uploadPath);
 
-            List<(string fileName, string path)> datas = new();
-            List<bool> results = new();
-            foreach (IFormFile file in files)
-            {
-                string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
+                List<(string fileName, string path)> datas = new();
+                List<bool> results = new();
+                foreach (IFormFile file in files)
+                {
+                    string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
 
-                bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
-                datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
-                results.Add(result);
-            }
+                    bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
+                    datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
+                    results.Add(result);
+                }
 
-            if (results.TrueForAll(r => r.Equals(true)))
-                return datas;
+                if (results.TrueForAll(r => r.Equals(true)))
+                    return datas;
 
-            return null;
+                return null;
 
             //todo Eğer ki yukarıdaki if geçerli değilse burada dosyaların sunucuda yüklenirken hata alındığına dair uyarıcı bir exception oluşturulup fırlatılması gerekyior!
         }
